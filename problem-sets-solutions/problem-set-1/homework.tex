@@ -1,0 +1,195 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{boondox-cal}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage{svg}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+
+\usetikzlibrary{automata,positioning, arrows.meta}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Problem Set\ \#1}
+\newcommand{\hmwkDueDate}{February 28, 2024}
+\newcommand{\hmwkClass}{CS229}
+\newcommand{\hmwkClassInstructor}{Andrew Ng}
+\newcommand{\hmwkAuthorName}{\textbf{0130}}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+% empty underline
+\newcommand{\emptyunderline}{\underline{\ \ \ \ \ \ }}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\begin{homeworkProblem}
+    \begin{enumerate}
+        \item \[
+                \begin{aligned}
+                \frac{\partial}{\partial \theta_j} J(\theta) &= \frac{\partial}{\partial \theta_j} -\frac{1}{m} \sum_{i=1}^m y^{(i)} \log (h_{\theta}(x^{(i)})) + (1 -
+                y^{(i)} \log (1 - h_{\theta}(x^{(i)}))) \\
+                &= - \frac{1}{m} \sum_{i=1}^m [ y^{(i)} \frac{1}{h_{\theta}(x^{(i)})}  - (1 - y^{(i)}) \frac{1}{1-h_{\theta}(x^{(i)})} ] \frac{\partial}{\partial \theta_j} h_{\theta}(x^{(i)})
+                \end{aligned}
+            \]
+            Then we calculate:
+            \[ 
+                \frac{\partial}{\partial\theta_j} h_{\theta}(x^{(i)}) = \frac{\partial}{\partial \theta_j} g(\theta^T x^{(i)}) = g(\theta^T x^{(i)})(1-g(\theta^T x^{(i)})) x_j^{(i)} = h_{\theta}(x^{(i)})(1 - h_{\theta}(x^{(i)})) x_j^{(i)}
+            \]
+            And we can further simplify the above equation:
+            \[
+                \begin{aligned}
+                \frac{\partial}{\partial \theta_j} J(\theta) &= -\frac{1}{m} \sum_{i=1}^m [(y^{(i)} - h_\theta(x^{(i)})) - (1-y^{(i)})h_{\theta}(x^{(i)})] x_{j}^{(i)} \\
+                &= -\frac{1}{m} \sum_{i=1}^m (y^{(i)} - h_{\theta}(x^{(i)})) x_j^{(i)} \\
+                \end{aligned}
+            \]
+
+            Then we can get second-order derivative:
+
+            \[
+                \begin{aligned}
+                    H_{ij} = \frac{\partial^2}{\partial \theta_i \partial \theta_j} J(\theta)  &= \frac{1}{m} \sum_{k=1}^m x_j \frac{\partial}{\partial \theta_i} h_{\theta}(x^{(k)}) \\
+                    &= \frac{1}{m} \sum_{k=1}^m x_{i}^{(k)} x_{j}^{(k)} h_{\theta}(x^{(k)})(1-h_{\theta}(x^{(k)}))\\
+                \end{aligned}
+            \]
+            for each vector z, consider the quadratic form of Hessian matrix:
+
+            \[
+                \begin{aligned}
+                    z^T H z &= \sum_{i=1}^n \sum_{j=1}^n z_i H_{ij} z_j = \frac{1}{m} \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^m z_i x_i^{(k)} z_j x_j^{(k)}h_\theta(x^{(k)})(1-h_{\theta}(x^{(k)})) \\
+                    &= \frac{1}{m} \sum_{k=1}^m (\sum_{i=1}^n \sum_{j=1}^n z_i x_i^{(k)} z_j x_{j}^{(k)}) h_{\theta}(x^{(k)}) (1-h_\theta(x^{(k)})) \\
+                    &= \frac{1}{m}\sum_{k=1}^m {(x^{(k)T}z)}^2 h_{\theta}(x^{(k)}) (1 - h_\theta(x^{(k)})) \geq 0 \Leftrightarrow H \succeq 0
+                \end{aligned}
+            \]
+        \item Codes are shown in src director.
+        \item 
+            \[
+                1
+            \]
+    \end{enumerate}
+\end{homeworkProblem}
+
+\pagebreak
+
+\end{document}
