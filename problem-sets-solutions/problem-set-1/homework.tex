@@ -203,10 +203,40 @@
         \[
             \begin{aligned}
                 P(y=1|x;\phi, \mu_0, \mu_1, \Sigma) &= \frac{1}{1 + \exp(-(\theta^T x + \theta_0))} \\
-                \theta &= \Sigma^{-1} (\mu_0 - \mu_1)   \\
+                \theta &= \Sigma^{-1} (\mu_1 - \mu_0)   \\
                 \theta_0 &= 1/2(\mu_0^T\Sigma^{-1}\mu_0 - \mu_1^T\Sigma^{-1}\mu_1) + \log(1-\phi) - \log\phi
             \end{aligned}
         \]
+    \item Firstly, simplify the formula of \( l \):
+        \[
+            l(\phi, \mu_0, \mu_1, \Sigma) = \log \prod_{i=1}^m p(x^{(i)}, y^{(i)}, \phi, \mu_0, \mu_1, \Sigma) \\
+        \]
+        \[
+            = -\frac{mn}{2} \log(2\pi) -\frac{m}{2} \log(|\Sigma|) - \frac{1}{2}\sum_{i=1}^m{(x^{(i)} - \mu_{y^{(i)}})}^T\Sigma^{-1}{(x^{(i)} - \mu_{y^{(i)}})} + \sum_{i=1}^m y^{(i)}\log(\phi) + (1-y^{(i)}) \log(1-\phi)
+        \]
+        let \( \frac{\partial}{\partial \phi} l = 0 \), we have
+        \[
+            \frac{\partial}{\partial \phi} l = \sum_{i=1}^m \frac{(1-\phi)y^{(i)} - \phi(1-y^{(i)})}{\phi(1-\phi)} = 0 \Rightarrow \phi = \frac{1}{m}\sum_{i=1}^m 1\{ y^{(i)} = 1 \}
+        \]
+        let \( \frac{\partial}{\partial \mu_{y^{(i)}}} l = 0 \), we have
+        \[
+            \begin{cases}
+            \frac{\partial}{\partial \mu_{y^{(i)}}} l &= \frac{1}{2} \sum_{i=1}^m 2 \Sigma^{-1} (x^{(i)} - \mu_{y^{(i)}}) = \Sigma^{-1} \sum_{i=1}^m (x^{(i)} - \mu_{y^{(i)}}) = 0 \\
+            \frac{\partial}{\partial \mu_0} \mu_{y^{(i)}} &= 1\{ y^{(i)} = 0 \}, \frac{\partial}{\partial \mu_1}\mu_{y^{(i)}} = 1\{ y^{(i)} = 1\}
+            \end{cases}
+        \]
+        using the chain rule, we get:
+        \[
+            \frac{\partial}{\partial \mu_k} l = \frac{\partial}{\partial \mu_{y^{(i)}}} l \frac{\partial}{\partial \mu_k} \mu_{y^{(i)}} = 0 \Rightarrow \mu_k = \frac{\sum_{i=1}^m 1\{ y^{(i)} = k \} x^{(i)}}{\sum_{i=1}^m 1\{ y^{(i)} = k \}}, k = 0,1
+        \]
+        let \( \frac{\partial}{\partial \Sigma} l = 0 \), we have
+        \[
+            \begin{aligned}
+                \frac{\partial}{\partial \Sigma} l &= -\frac{m}{2} \Sigma^{-1} + \frac{1}{2} \sum_{i=1}^m \Sigma^{-1} (x^{(i)} - \mu_{y^{(i)}}) {(x^{(i)} - \mu_{y^{(i)}})}^T \Sigma^{-1} = 0 \\
+                &\Rightarrow \Sigma = \frac{1}{m} \sum_{i=1}^m (x^{(i)} - \mu_{y^{(i)}}){(x^{(i)} - \mu_{y^{(i)}})}^T
+            \end{aligned}
+        \]
+        \item Codes are shown in src director, see \texttt{src/p01e\_gda.py}.
     \end{enumerate}
 \end{homeworkProblem}
 

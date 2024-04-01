@@ -14,12 +14,16 @@ def main(train_path, eval_path, pred_path):
     """
     # Load dataset
     x_train, y_train = util.load_dataset(train_path, add_intercept=False)
-    x_eval, y_eval = util.load_dataset(eval_path, add_intercept=False)
+    x_eval, y_eval = util.load_dataset(eval_path, add_intercept=True)
 
-    # *** START CODE HERE ***
     model = GDA()
     model.fit(x_train, y_train)
-    # *** END CODE HERE ***
+    y_pred = model.predict(x_eval)
+    y_pred_label = (y_pred > 0.5).astype(int)
+    np.savetxt(pred_path, y_pred_label, fmt="%d")
+    util.plot(x_eval, y_eval, model.theta, 'output/p01e_eval_ds2.png')
+    util.plot(x_train, y_train, model.theta, 'output/p01e_train_ds2.png')
+    util.plot(x_eval, y_pred_label, model.theta, 'output/p01e_pred_ds2.png')
 
 
 class GDA(LinearModel):
@@ -30,11 +34,6 @@ class GDA(LinearModel):
         > clf.fit(x_train, y_train)
         > clf.predict(x_eval)
     """
-
-    def __init__(self):
-        self.phi = 0
-        self.mu = None
-        self.sigma = None
 
     def fit(self, x, y):
         """Fit a GDA model to training set given by x and y.
@@ -47,13 +46,18 @@ class GDA(LinearModel):
             theta: GDA model parameters.
         """
         m, n = x.shape
-        self.mu = np.zeros((2, n))
-        # *** START CODE HERE ***
-        self.phi = sum(1 for i in y if int(i) == 1) / m
-        self.mu[0] = sum(x[i] for i in range(0, m) if int(y[i]) == 0) / sum(1 for i in y if int(i) == 0)
-        self.mu[1] = sum(x[i] for i in range(0, m) if int(y[i]) == 1) / sum(1 for i in y if int(i) == 1)
-        self.sigma = sum(((x[i] - self.mu[int(y[i])]) @ (x[i] - self.mu[int(y[i])])).T for i in range(0, m)) / m
-        # *** END CODE HERE ***
+        self.theta = np.zeros(n+1)
+
+        y_1 = sum(y == 1)
+        phi = y_1 / m
+        mu_0 = np.sum(x[y == 0], axis=0) / (m - y_1)
+        mu_1 = np.sum(x[y == 1], axis=0) / y_1
+        sigma = ((x[y == 0] - mu_0).T @ (x[y == 0] - mu_0) + (x[y == 1] - mu_1).T @ (x[y == 1] - mu_1)) / m
+
+        sigma_inv = np.linalg.inv(sigma)
+        self.theta[0] = ((mu_0 + mu_1) @ sigma_inv @ (mu_0 - mu_1)) / 2 + np.log((1-phi) / phi)
+
+        self.theta[1:] = sigma_inv @ (mu_1 - mu_0)
 
     def predict(self, x):
         """Make a prediction given new inputs x.
@@ -64,6 +68,4 @@ class GDA(LinearModel):
         Returns:
             Outputs of shape (m,).
         """
-        # *** START CODE HERE ***
-        
-        # *** END CODE HERE
+        return 1 / (1 + np.exp(-(x @ self.theta)))

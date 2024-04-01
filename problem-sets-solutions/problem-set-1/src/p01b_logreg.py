@@ -19,10 +19,10 @@ def main(train_path, eval_path, pred_path):
     model = LogisticRegression()
     model.fit(x_train, y_train)
 
-    util.plot(x_train, y_train, model.theta, 'output/p01b_train.png')
-    util.plot(x_test, y_test, model.theta, 'output/p01b_test.png')
+    util.plot(x_train, y_train, model.theta, 'output/p01b_train_ds2.png')
+    util.plot(x_test, y_test, model.theta, 'output/p01b_eval_ds2.png')
     y_pred_labels = (model.predict(x_test) > 0.5).astype(int)
-    util.plot(x_test, y_pred_labels, model.theta, 'output/p01b_pred.png')
+    util.plot(x_test, y_pred_labels, model.theta, 'output/p01b_pred_ds2.png')
     np.savetxt(pred_path, y_pred_labels, fmt="%d")
     # *** END CODE HERE ***
 
