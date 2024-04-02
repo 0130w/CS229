@@ -229,11 +229,48 @@
         \[
             \frac{\partial}{\partial \mu_k} l = \frac{\partial}{\partial \mu_{y^{(i)}}} l \frac{\partial}{\partial \mu_k} \mu_{y^{(i)}} = 0 \Rightarrow \mu_k = \frac{\sum_{i=1}^m 1\{ y^{(i)} = k \} x^{(i)}}{\sum_{i=1}^m 1\{ y^{(i)} = k \}}, k = 0,1
         \]
-        let \( \frac{\partial}{\partial \Sigma} l = 0 \), we have
+        we don't need to assume \( n = 1 \), let's consider a more general case, let \( \frac{\partial}{\partial \Sigma} l = 0 \):
+        \[
+            \frac{\partial}{\partial \Sigma} l = \frac{\partial}{\partial \Sigma} \{ -\frac{m}{2}\log(|\Sigma|) - \frac{1}{2} \sum_{i=1}^m {(x^{(i)} - \mu_{y^{(i)}})}^T \Sigma^{-1} (x^{(i)} - \mu_{y^{(i)}}) \} = 0
+        \]
+        let's first calculate the derivative of the determinant, suppose \( D = (\delta_1, \delta_2, \ldots, \delta_n) \) and 
+        
+        \( E = (\epsilon_1, \epsilon_2, \ldots, \epsilon_n) \), we have:
+        \[
+            \det(D+tE) - \det(D) = \sum_{i=1}^n \det(\delta_1, \delta_2,\ldots, t\epsilon_i, \ldots, \delta_n)
+        \]
+        let \( \epsilon_i = \sum_{j} f_{ij} \delta_j \) which is equivalent to \( E = DF \) where \( F_{ij} = f_{ij} \), then the above equation can be written as:
+        \[
+            \sum_{i=1}^n \det(\delta_1, \delta_2, \ldots, t\epsilon_i, \ldots, \delta_n) = \sum_{i=1}^n tf_{ii} \det(D) = \text{tr}(D^{-1}E) \cdot t \det(D)
+        \]
+        then we know the derivative of the determinant is:
+        \[
+            \frac{\partial}{\partial \Sigma} \det(\Sigma) = \det(\Sigma) \text{tr}(\Sigma^{-1}E)
+        \]
+        then we can calculate the derivative of the log determinant:
+        \[
+            \frac{\partial}{\partial \Sigma} \log(\det(\Sigma)) = \frac{1}{\det(\Sigma)} \det(\Sigma) \text{tr}(\Sigma^{-1}E) = \text{tr}(\Sigma^{-1}E)
+        \]
+        next, we calculate the derivative of the inverse of the matrix:
         \[
             \begin{aligned}
-                \frac{\partial}{\partial \Sigma} l &= -\frac{m}{2} \Sigma^{-1} + \frac{1}{2} \sum_{i=1}^m \Sigma^{-1} (x^{(i)} - \mu_{y^{(i)}}) {(x^{(i)} - \mu_{y^{(i)}})}^T \Sigma^{-1} = 0 \\
-                &\Rightarrow \Sigma = \frac{1}{m} \sum_{i=1}^m (x^{(i)} - \mu_{y^{(i)}}){(x^{(i)} - \mu_{y^{(i)}})}^T
+            {(D + tE)}^{-1} - D^{-1} &= {(D(I+tD^{-1}E))}^{-1} - D^{-1} \\
+            &= (I-tD^{-1}E + O(t^2))D^{-1} - D^{-1} \\
+            &= -tD^{-1}ED^{-1} + O(t^2)
+            \end{aligned}
+        \]
+        then we know the derivative of the inverse of the matrix is:
+        \[
+            \frac{\partial}{\partial \Sigma} \Sigma^{-1} = -\Sigma^{-1} E \Sigma^{-1}
+        \]
+        using the fact that \( \frac{\partial}{\partial A} AB = B^T \), let \( u^{(i)} = (x^{(i)} - \mu_{y^{(i)}})\), we know the equation of \( \frac{\partial}{\partial \Sigma} l = 0 \) is equivalent to:
+        \[
+            \begin{aligned}
+                &-\frac{m}{2} \text{tr}(\Sigma^{-1}E) + \frac{1}{2}\sum_{i=1}^m {u^{(i)}}^T \Sigma^{-1} E \Sigma^{-1} {u^{(i)}} = 0  \\
+            \Leftrightarrow & \text{tr} (\sum_{i=1}^m {u^{(i)}}^T \Sigma^{-1} E \Sigma^{-1} u^{(i)} - m\Sigma^{-1}E) = 0    \\
+            \Leftrightarrow & \text{tr} ((\sum_{i=1}^m \Sigma^{-1} u^{(i)} {u^{(i)}}^T - mI)\Sigma^{-1} E) = 0, \forall E   \\
+            \Leftrightarrow & \sum_{i=1}^m \Sigma^{-1} u^{(i)} {u^{(i)}}^T = mI \\
+            \Leftrightarrow & \Sigma = \frac{1}{m} \sum_{i=1}^m (x^{(i)} - \mu_{y^{(i)}}) {(x^{(i)} - \mu_{y^{(i)}})}^T
             \end{aligned}
         \]
         \item Codes are shown in src director, see \texttt{src/p01e\_gda.py}.
