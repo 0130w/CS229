@@ -274,6 +274,10 @@
             \end{aligned}
         \]
         \item Codes are shown in src director, see \texttt{src/p01e\_gda.py}.
+        \item Figure is shown in \texttt{src/output/p01f\_plot.png}. Logistic regression is better than GDA in this case, since the
+        \( p(x | y) \) may not be Gaussian.
+        \item Figure is shown in \texttt{src/output/p01g\_plot.png}.
+        \item The idea of this problem is that we can choose a transformation of \( x \) such that \( p(x|y) \) is Gaussian. (See Box-Cox transformation)
     \end{enumerate}
 \end{homeworkProblem}
 
@@ -391,7 +395,63 @@
 \pagebreak
 
 \begin{homeworkProblem}
-    
+    \begin{enumerate}
+        \item
+        \begin{enumerate}
+            \item Let
+            \[
+                W = 1/2 \begin{bmatrix}
+                    w^{(1)} & 0 & \cdots & 0 \\
+                    0 & w^{(2)} & \cdots & 0 \\
+                    \vdots & \vdots & \ddots & \vdots \\
+                    0 & 0 & \cdots & w^{(n)}
+                \end{bmatrix}
+            \]
+            then we have: \( J(\theta) = {(X\theta - y)}^T W {(X\theta - y)} \).
+            \item Let \( \frac{\partial}{\partial \theta} J(\theta) = 0 \), which is equivalent to:
+            \[
+                \frac{\partial}{\partial \theta} {(X\theta - y)}^T W (X\theta - y) = \frac{\partial}{\partial A} A^T W A \circ \frac{\partial}{\partial \theta} (X\theta - y) \quad (\text{where } A = X\theta - y)
+            \]
+            since we know: 
+            \[ 
+                \begin{split}
+                &X(\theta + E) - y - (X\theta - y) = XE  \\
+                &{(A+E)}^T W (A+E) - A^T W A = A^T W E + E^T W A + E^T W E
+                \end{split}
+            \]
+            we can calculate that the differential of \( J(\theta) \) is (Given input \( E \)):
+            \[
+                A^T W XE + E^T X^T W A
+            \]
+            let it be zero, we have:
+            \[
+                \begin{split}
+                & A^T W X E + E^T X^T W A = 0, \forall E \\
+                \Leftrightarrow &X^T W^T A = X^T W^T (X\theta - y) = 0  \\
+                \Leftrightarrow &X^T W^T X \theta = X^T W^T y   \\
+                \Leftrightarrow &\theta = {(X^T W^T X)}^{-1} X^T W^T y
+                \end{split}
+            \]
+        \item Let 
+                \[ 
+                    \begin{split}
+                    J(\theta) &= \prod_{i=1}^m  \frac{1}{\sqrt{2\pi} \sigma^{(i)}} \exp(-\frac{{(y^{(i)} - \theta^T x^{(i)})}^2}{2{(\sigma^{(i)})}^2})
+                    \end{split}
+                \]
+                define \( l(\theta) = \log J(\theta) \), maximize \( l(\theta) \) is equivalent to maximize \( J(\theta) \), \( l(\theta) \) can be wriiten as:
+                \[
+                    l(\theta) = \log J(\theta) = -\frac{m}{2} \log 2\pi - \sum_{i=1}^m \log \sigma^{(i)} - \sum_{i=1}^m \frac{{(y^{(i)} - \theta^T x^{(i)})}^2}{2{(\sigma^{(i)})}^2}
+                \]
+                and we find that maximize \( l(\theta) \) is equivalent to:
+                \[
+                    \text{maximize } \frac{1}{2} \sum_{i=1}^m -\frac{1}{{(\sigma^{(i)})}^2} {(y^{(i)} - \theta^T x^{(i)})}^2
+                \]
+                which is equivalent to solve the locally weighted linear regression with \( w_i = -\frac{1}{{(\sigma^{(i)})}^2} \).
+        \end{enumerate}
+        \item Codes are shown in src directory, see \texttt{src/p05b\_lwr.py}.
+        \item Figures are shown in \texttt{src/output/p05c\_lwr\_tau{(number)}.png}. \( \tau = 0.05 \) achieves the lowest MSE on the
+        \texttt{valid} split, and the MSE on the \texttt{test} split is \texttt{0.016990143386866628} with \( \tau = 0.05 \).
+    \end{enumerate}
 \end{homeworkProblem}
 
 \end{document}
