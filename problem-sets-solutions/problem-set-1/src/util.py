@@ -87,3 +87,5 @@ def plot(x, y, theta, save_path=None, correction=1.0):
     plt.ylabel('x2')
     if save_path is not None:
         plt.savefig(save_path)
+    else:
+        plt.show()
