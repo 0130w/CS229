@@ -30,7 +30,7 @@ def main(tau, train_path, eval_path):
     plt.plot(x_eval, y_pred, 'ro', linewidth=2)
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.savefig(f'output/p05b_lwr_tau{tau}_test.png')
+    plt.savefig(f'output/p05b_lwr.png')
     # *** END CODE HERE ***
 
 
