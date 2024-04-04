@@ -281,10 +281,31 @@
     \end{enumerate}
 \end{homeworkProblem}
 
+\pagebreak
 
 \begin{homeworkProblem}
 
-
+\begin{enumerate}
+    \item Using the chain of probability, \( p(y^{(i)} = 1 | x^{(i)}) \) can be written as:
+    \[
+        p(y^{(i)} = 1 | x^{(i)}) = \sum_{k=0}^1 p(y^{(i)} = 1 | t^{(i)} = k, x^{(i)}) p(t^{(i)} = k | x^{(i)})
+    \]
+    and since we know \( p(y^{(i)} = 1 | t^{(i)} = 1, x^{(i)}) = p(y^{(i)} = 1 | t^{(i)} = 1)\) and \( p(y^{(i)} = 1 | t^{(i) = 0, x^{(i)}}) = 0 \), we can further simplify the above equation:
+    \[
+        p(y^{(i)} = 1 | x^{(i)}) = p(y^{(i)} = 1 | t^{(i)} = 1) p(t^{(i)} = 1 | x^{(i)})
+    \]
+    then we know \( \alpha = p(y^{(i)} = 1 | t^{(i)} = 1)\).
+    \item 
+    \[
+        h(x^{(i)}) \approx p(y^{(i)} = 1 | x^{(i)}) = \alpha p(t^{(i)} = 1 | x^{(i)}) \approx \alpha
+    \]
+    \item Codes are shown in src directory, see \texttt{src/p02cde\_posonly.py}, result is stored in \texttt{src/output/p02c\_pred.txt}.
+    \item Codes are shown in src directory, see \texttt{src/p02d\_roc.py}, result is stored in \texttt{src/output/p02d\_pred.txt}.
+    \item Codes are shown in src directory, see \texttt{src/p02e\_roc.py}, result is stored in \texttt{src/output/p02e\_pred.txt}. We need correction here
+    since we train on dataset with label \texttt{y}, but we need to predict on dataset with label \texttt{t}. Let \( \theta' \) represents the \( \theta \) after correction, we need
+    to find a relationship between \( \theta \) and \( \theta' \) using the fact that \( p(t^{(i)} = 1 | x^{(i)}) = \alpha p(y^{(i)} = 1 | x^{(i)}) \). Here I just use the correction in
+    official solution.
+\end{enumerate}
     
 \end{homeworkProblem}
 
